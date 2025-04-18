@@ -41,3 +41,21 @@ Once the buckets were created, I uploaded the **static files** for the website, 
 
 After uploading the files, I needed to make the website publicly accessible. To do this, I navigated to the **Permissions** tab in the GCS bucket settings and added the **allUsers** group. By assigning the **Storage Object Viewer** role to `allUsers`, I made the `index.html` file publicly accessible.
 
+![GCS Bucket Setup with Only Object Viewer](./images/4-addserviceaccount.png)
+
+![Service Account Setup](./images/5-addkeyjson.png)
+
+## Automating Infrastructure with Terragrunt
+
+To enhance efficiency, automation, and scalability, I decided to use **Terragrunt** for infrastructure management, specifically to automate the creation and management of the environment-specific configurations (e.g., **dev** and **prod**).
+
+
+### **Terragrunt Setup**
+
+Terragrunt simplifies Terraform's configuration management by organizing configurations for multiple environments. I used Terragrunt to handle **multiple environments** in separate directories (`dev` and `prod`), while still reusing the Terraform module for the static site configuration.
+
+![terraform init ](./images/7-terraforminit.png)
+
+![terraform plan ](./images/8-terraformplan.png)
+
+![terraform apply ](./images/9-terragruntapply.png)
