@@ -25,6 +25,11 @@ jobs:
           workload_identity_provider: ${{ secrets.WORKLOAD_IDENTITY_PROVIDER }} 
           service_account: ${{ secrets.SERVICE_ACCOUNT }} 
 
+      - name: Install Terraform
+        uses: hashicorp/setup-terraform@v1
+        with:
+            terraform_version: '1.5.0'    
+
       - name: Install Terragrunt
         run: |
           curl -sLo terragrunt https://github.com/gruntwork-io/terragrunt/releases/download/v0.41.0/terragrunt_linux_amd64
