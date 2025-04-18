@@ -3,8 +3,8 @@ name: Deploy to GCP
 on:
   push:
     branches:
-      - main  # Auto-deploy to dev on push to main
-  workflow_dispatch:  # Manual trigger for prod
+      - main  
+  workflow_dispatch:  
 
 jobs:
   deploy-dev:
@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: 'read'
-      id-token: 'write'  # Required to authenticate using OIDC
+      id-token: 'write'  
 
     steps:
       - name: Checkout code
@@ -39,5 +39,42 @@ jobs:
       - name: Initialize and Apply with Terragrunt (Dev)
         run: |
           cd live/dev
+          terragrunt init
+          terragrunt apply -auto-approve
+
+  deploy-prod:
+    name: Deploy to Prod
+    runs-on: ubuntu-latest
+    needs: deploy-dev  
+    environment: production 
+    permissions:
+      contents: 'read'
+      id-token: 'write'  
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Authenticate to Google Cloud using OIDC (Workload Identity Federation)
+        uses: google-github-actions/auth@v2
+        with:
+          project_id: ${{ secrets.PROJECT_ID }} 
+          workload_identity_provider: ${{ secrets.WORKLOAD_IDENTITY_PROVIDER }} 
+          service_account: ${{ secrets.SERVICE_ACCOUNT }} 
+
+      - name: Install Terraform
+        uses: hashicorp/setup-terraform@v1
+        with:
+            terraform_version: '1.5.0'    
+
+      - name: Install Terragrunt
+        run: |
+          curl -sLo terragrunt https://github.com/gruntwork-io/terragrunt/releases/download/v0.41.0/terragrunt_linux_amd64
+          chmod +x terragrunt
+          sudo mv terragrunt /usr/local/bin/terragrunt
+
+      - name: Initialize and Apply with Terragrunt (Prod)
+        run: |
+          cd live/prod
           terragrunt init
           terragrunt apply -auto-approve
