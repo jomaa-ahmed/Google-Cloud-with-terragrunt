@@ -1,0 +1,32 @@
+name: Deploy to GCP
+
+on:
+  push:
+    branches:
+      - main  # Trigger deployment on push to 'main'
+  workflow_dispatch:  # Allow manual trigger
+
+jobs:
+  deploy-dev:
+    name: Deploy to Dev
+    runs-on: ubuntu-latest
+    permissions:
+      contents: 'read'
+      id-token: 'write'  # Required for OIDC
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Authenticate with GCP
+        uses: 'google-github-actions/auth@v2'
+        with:
+          project_id: ${{ secrets.GCP_PROJECT_ID }}
+          workload_identity_provider: ${{ secrets.WORKLOAD_IDENTITY_PROVIDER }}
+          service_account: ${{ secrets.SERVICE_ACCOUNT_EMAIL }}
+
+      - name: Initialize and Apply with Terragrunt (Dev)
+        run: |
+          cd live/dev
+          terragrunt init
+          terragrunt apply -auto-approve
