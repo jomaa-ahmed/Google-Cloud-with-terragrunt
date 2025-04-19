@@ -123,7 +123,7 @@ A dedicated bucket stores Terraform state files so that state locking and versio
 **Folder structure** – separate prefixes (`dev/`, `prod/`).  
 ![Folder layout for remote state](./images/27-tfstatefileremotebackend.png)
 
-## 🏁 Conclusion
+##  Conclusion
 
 - **Static Site** – Publicly served from two GCS buckets (`dev(main)`, `prod`).
 - **IaC** – Terraform modules orchestrated by Terragrunt for a DRY, multi‑environment layout.
