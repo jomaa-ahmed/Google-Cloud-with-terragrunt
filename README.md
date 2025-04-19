@@ -106,3 +106,25 @@ This gate is implemented with GitHub Environments and the *required reviewers* 
 **Deployment resumes and completes** – After approval, the job proceeds, authenticates via OIDC, executes Terragrunt, and finishes successfully.
 
 ![Workflow run succeeding after approval](./images/24-approvalworkingfine.png)
+
+**Remote Backend & Terraform State Management**
+
+A dedicated bucket stores Terraform state files so that state locking and versioning are handled centrally.
+
+**Initial bucket list** – only website buckets present.  
+![Initial buckets before remote backend](./images/25-bucketupdated.png)
+
+**Create the state bucket** – `tf-state-ahmed-jemaa`.  
+![Bucket list including tf‑state bucket](./images/26-addingtfstatefile.png)
+
+**Folder structure** – separate prefixes (`dev/`, `prod/`).  
+![Folder layout for remote state](./images/27-tfstatefileremotebackend.png)
+
+## 🏁 Conclusion
+
+- **Static Site** – Publicly served from two GCS buckets (`dev(main)`, `prod`).
+- **IaC** – Terraform modules orchestrated by Terragrunt for a DRY, multi‑environment layout.
+- **Remote Backend** – Terraform state stored in a versioned, locked `tf‑state‑ahmed‑jemaa` bucket.
+- **CI/CD** – GitHub Actions pipelines authenticate to GCP via OIDC (no long‑lived keys) and deploy on every push.
+- **Prod Gate** – Manual approval required before production runs, enforced with GitHub Environments.
+- **Security** – Least‑privilege IAM, uniform bucket‑level access, state‑file soft delete & versioning.
