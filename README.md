@@ -66,3 +66,21 @@ With this, your static website is now hosted on Google Cloud Storage, and the pr
 
 ![results ](./images/11-deploysuccess.png)
 
+## Continuous Integration & Deployment with GitHub Actions
+
+To ensure safe and repeatable delivery of infrastructure changes, a **GitHub Actions** workflow has been configured to deploy updates automatically. The workflow relies on **Workload Identity Federation (OIDC)**—eliminating the need for long‑lived service‑account keys while still granting the pipeline the permissions it requires.
+
+Key characteristics:
+
+* **Trigger** – Executes on every push to the `main` branch.
+* **Authentication** – GitHub exchanges an ephemeral OIDC token for a short‑lived Google Cloud service‑account identity.
+* **Execution** – Terraform/Terragrunt initialise, plan, and apply the configuration for the target environment.
+* **Outcome** – Website assets are synchronised to the correct GCS bucket, and the site is updated within seconds of a commit.
+
+The images below illustrate the critical elements of this setup:
+
+![Service account list](./images/13-createserviceaccountforgithubaction.png)
+![Identity pool creation](./images/14-createpool.png)
+![OIDC provider mapping](./images/15-setuptheOIDCPROVIDER.png)
+![Repository secrets](./images/17-setupsecretes.png)
+![Successful workflow run](./images/20-firstworkflowsuccess.png)
