@@ -25,6 +25,15 @@ jobs:
           workload_identity_provider: ${{ secrets.WORKLOAD_IDENTITY_PROVIDER }} 
           service_account: ${{ secrets.SERVICE_ACCOUNT }} 
 
+      - name: Make TF state bucket if its missing 
+        shell: bash
+        run: |
+            BUCKET="gs://tf-state-${{ secrets.PROJECT_ID }}"
+            gsutil ls -b "$BUCKET" >/dev/null 2>&1 && exit 0
+            gsutil mb -p "${{ secrets.PROJECT_ID }}" -l us-central1 "$BUCKET"
+            gsutil versioning set on "$BUCKET"
+        
+
       - name: Install Terraform
         uses: hashicorp/setup-terraform@v1
         with:
@@ -60,7 +69,16 @@ jobs:
         with:
           project_id: ${{ secrets.PROJECT_ID }} 
           workload_identity_provider: ${{ secrets.WORKLOAD_IDENTITY_PROVIDER }} 
-          service_account: ${{ secrets.SERVICE_ACCOUNT }} 
+          service_account: ${{ secrets.SERVICE_ACCOUNT }}
+ 
+          
+      - name: Make TF state bucket if its missing 
+        shell: bash
+        run: |
+              BUCKET="gs://tf-state-${{ secrets.PROJECT_ID }}"
+              gsutil ls -b "$BUCKET" >/dev/null 2>&1 && exit 0
+              gsutil mb -p "${{ secrets.PROJECT_ID }}" -l us-central1 "$BUCKET"
+              gsutil versioning set on "$BUCKET"
 
       - name: Install Terraform
         uses: hashicorp/setup-terraform@v1
