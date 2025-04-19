@@ -65,7 +65,7 @@ Terragrunt simplifies Terraform's configuration management by organizing configu
 
 ### **Results**
 
-With this, your static website is now hosted on Google Cloud Storage, and the process is fully automated using Terragrunt. Both the dev and prod environments have been deployed and are publicly accessible.
+With this, our static website is now hosted on Google Cloud Storage, and the process is fully automated using Terragrunt. Both the dev and prod environments have been deployed and are publicly accessible.
 
 ![results ](./images/11-deploysuccess.png)
 
