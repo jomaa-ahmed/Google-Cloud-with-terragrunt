@@ -3,7 +3,6 @@
 
 ![Architecture Diagram](./images/canva-diagram.png)
 
-[▶️ **Watch the Demo Video**](./images/demo.mp4)
 
 ## Initial Setup of Google Cloud
 
