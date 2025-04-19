@@ -1,7 +1,13 @@
 remote_state {
   backend = "gcs"
-  config  = {
+
+  config = {
     bucket = "tf-state-ahmed-jemaa"
     prefix = path_relative_to_include()
+  }
+
+  generate = {                # optional – overrides the defaults
+    path      = "backend.tf"
+    if_exists = "overwrite"
   }
 }
