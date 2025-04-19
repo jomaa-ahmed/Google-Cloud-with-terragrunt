@@ -66,9 +66,9 @@ With this, your static website is now hosted on Google Cloud Storage, and the pr
 
 ![results ](./images/11-deploysuccess.png)
 
-## Continuous Integration & Deployment with GitHub Actions
+### **Continuous Integration & Deployment with GitHub Actions**
 
-To ensure safe and repeatable delivery of infrastructure changes, a **GitHub Actions** workflow has been configured to deploy updates automatically. The workflow relies on **Workload Identity Federation (OIDC)**—eliminating the need for long‑lived service‑account keys while still granting the pipeline the permissions it requires.
+To ensure safe and repeatable delivery of infrastructure changes, a **GitHub Actions** workflow has been configured to deploy updates automatically. The workflow relies on **Workload Identity Federation (OIDC)**,eliminating the need for long‑lived service‑account keys while still granting the pipeline the permissions it requires.
 
 Key characteristics:
 
@@ -84,3 +84,25 @@ The images below illustrate the critical elements of this setup:
 ![OIDC provider mapping](./images/15-setuptheOIDCPROVIDER.png)
 ![Repository secrets](./images/17-setupsecretes.png)
 ![Successful workflow run](./images/20-firstworkflowsuccess.png)
+
+
+### **Manual Approval for Production Deployments**
+
+To minimise risk, deployments to **production** require explicit human approval.  
+This gate is implemented with GitHub Environments and the *required reviewers* rule.
+
+**Configure the protection rule** – In the repository i  enable *Required reviewers* and add at least one maintainer.
+
+![GitHub environment configuration showing required reviewers](./images/21-addreviiewerforproductionenv.png)
+
+**Pipeline waits for approval** – When the workflow reaches the `Deploy to Prod` job, GitHub places the run in a *pending* state until approval is granted.
+
+![Workflow run paused and waiting for review](./images/22-approvalwaitingforprodenv.png)
+
+**Reviewer approves the deployment** – An authorised reviewer opens the *Review pending deployments* dialog and clicks **Approve and deploy**.
+
+![Modal for approving the production deployment](./images/23-approveit.png)
+
+**Deployment resumes and completes** – After approval, the job proceeds, authenticates via OIDC, executes Terragrunt, and finishes successfully.
+
+![Workflow run succeeding after approval](./images/24-approvalworkingfine.png)
