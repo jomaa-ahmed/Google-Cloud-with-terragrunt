@@ -6,7 +6,7 @@ remote_state {
     prefix = path_relative_to_include()
   }
 
-  generate = {                # optional – overrides the defaults
+  generate = {              
     path      = "backend.tf"
     if_exists = "overwrite"
   }

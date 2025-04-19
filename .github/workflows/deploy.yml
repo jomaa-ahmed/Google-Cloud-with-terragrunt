@@ -3,8 +3,8 @@ name: Deploy to GCP
 on:
   push:
     branches:
-      - main  # Auto-deploy to dev on push to main
-  workflow_dispatch:  # Manual trigger for prod
+      - main     #run auto when we push to main (dev) branch
+  workflow_dispatch:  # this is Manual trigger for prod 
 
 jobs:
   deploy-dev:
@@ -12,12 +12,13 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: 'read'
-      id-token: 'write'  # Required to authenticate using OIDC
+      id-token: 'write'  
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
 
+        #No json key files in secrets - better security then service account
       - name: Authenticate to Google Cloud using OIDC (Workload Identity Federation)
         uses: google-github-actions/auth@v2
         with:
@@ -25,18 +26,18 @@ jobs:
           workload_identity_provider: ${{ secrets.WORKLOAD_IDENTITY_PROVIDER }} 
           service_account: ${{ secrets.SERVICE_ACCOUNT }} 
 
-      # after the OIDC auth step  (same for dev & prod jobs)
-      - name: Set up Cloud SDK (installs gcloud + gsutil)
+      # this is used to install gsutil to make bucket for state file 
+      - name: Set up Cloud SDK 
         uses: google-github-actions/setup-gcloud@v2
         with:
           project_id: ${{ secrets.PROJECT_ID }}
           install_components: 'gsutil'                
 
-      - name: Make TF state bucket if its missing 
+      - name: Make tf state bucket if its missing 
         shell: bash
         run: |
             BUCKET="gs://tf-state-${{ secrets.PROJECT_ID }}"
-            gsutil ls -b "$BUCKET" >/dev/null 2>&1 && exit 0
+            gsutil ls -b "$BUCKET" >/dev/null 2>&1 && exit 0   
             gsutil mb -p "${{ secrets.PROJECT_ID }}" -l us-central1 "$BUCKET"
             gsutil versioning set on "$BUCKET"
         
@@ -62,7 +63,7 @@ jobs:
     name: Deploy to Prod
     runs-on: ubuntu-latest
     needs: deploy-dev
-    environment: production  # Manual approval for prod in GitHub
+    environment: production  # requires manual approval in UI github 
     permissions:
       contents: 'read'
       id-token: 'write'  
@@ -78,7 +79,7 @@ jobs:
           workload_identity_provider: ${{ secrets.WORKLOAD_IDENTITY_PROVIDER }} 
           service_account: ${{ secrets.SERVICE_ACCOUNT }}
  
-      # after the OIDC auth step  (same for dev & prod jobs)
+      
       - name: Set up Cloud SDK (installs gcloud + gsutil)
         uses: google-github-actions/setup-gcloud@v2
         with:
