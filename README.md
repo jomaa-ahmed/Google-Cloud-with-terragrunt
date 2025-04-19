@@ -1,6 +1,10 @@
 # Static Website Hosting on Google Cloud Storage - Project Documentation
 
 
+![Architecture Diagram](./images/canva-diagram.png)
+
+[▶️ **Watch the Demo Video**](./images/demo.mp4)
+
 ## Initial Setup of Google Cloud
 
 The journey began with creating a **Google Cloud account** and setting up a new project within the **Google Cloud Console**. The project was named `ahmed-jemaa`, which served as the environment for hosting the static website.
